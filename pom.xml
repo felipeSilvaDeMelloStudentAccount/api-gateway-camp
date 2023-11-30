@@ -39,6 +39,9 @@
 			<id>github</id>
 			<name>GitHub felipeSilvaDeMelloStudentAccount Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/felipeSilvaDeMelloStudentAccount/api-gateway-camp</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</distributionManagement>
 	<groupId>api.gateway</groupId>
