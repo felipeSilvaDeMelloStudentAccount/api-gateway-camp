@@ -1,0 +1,43 @@
+server:
+  port: ${PORT:9000}
+
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "http://localhost:3000"
+            allowed-methods: "*"
+            allowed-headers: "*"
+            allow-credentials: true
+      routes:
+        #USER MANAGEMENT API
+        - id: user-api
+          uri: ${USER_API:http://localhost:9001}
+          #          Predicates are used to match the incoming request to the route.
+          predicates:
+            #              Specifies that the route will match any incoming request with the path starting with /api/v1/users.
+            - Path=/api/v1/users/**
+          #          Filters are used to modify the request or response.
+          filters:
+            #RewritePath=/api/v1/users/(?<path>.*), /api/v1/users/$\{path}
+            #/api/v1/users/(?<path>.*): This part captures the remaining path after /api/v1/users/ and assigns it to the variable path.
+            #/api/v1/users/$\{path}: This is the replacement path. It effectively appends the captured path to the new path.
+            - RewritePath=/api/v1/users/(?<path>.*), /api/v1/users/$\{path}
+        #              Ref: https://docs.spring.io/spring-cloud-gateway/docs/4.0.7/reference/html/#gateway-request-predicates-factories
+        #              Ref: https://docs.spring.io/spring-cloud-gateway/docs/4.0.7/reference/html/#gateway-filter-factories
+
+        #              Ref: https://docs.spring.io/spring-cloud-gateway/docs/4.0.7/reference/html/#gateway-request-predicates-factories
+
+        # CAMPSITE API
+        - id: campsite-api
+          uri: ${CAMPSITE_API:http://localhost:9002}
+          predicates:
+            - Path=/api/v1/campsites/**
+          filters:
+            - RewritePath=/api/v1/campsites/(?<path>.*), /api/v1/campsites/$\{path}
